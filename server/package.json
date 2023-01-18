@@ -1,24 +1,20 @@
 {
-  "name": "pokeindex",
+  "name": "server",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "type": "module",
   "scripts": {
-    "start": "nodemon index.js"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "index.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/kamber5/PTF-220---Zalihe-Materijala.git"
-  },
-  "author": "Kamber",
+  "keywords": [],
+  "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/kamber5/PTF-220---Zalihe-Materijala/issues"
-  },
-  "homepage": "https://github.com/kamber5/PTF-220---Zalihe-Materijala#readme",
   "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
     "express": "^4.18.2",
-    "mysql": "^2.18.1"
+    "mongoose": "^6.8.4",
+    "nodemon": "^2.0.20"
   }
 }

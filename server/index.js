@@ -1,21 +1,16 @@
-import pkg from 'Express';
-const express = pkg;
+require('dotenv').config();
+const express = require('express');
+const app = express();
+const cors = require('cors');
+const connection = require("./db");
 
-import mysql from 'mysql';
+//konekcija sa bazom
+connection();
 
-const app = express()
+//
+app.use(express.json());
+app.use(cors());
 
-const db = mysql.createConnection({
-    host:"localhost",
-    user:"root",
-    password:"allah01",
-    database:"dbzalihe_220"
-})
-
-app.get("/", (req, res) => {
-    res.json("Radiiiiii!!!!")
-})
-
-app.listen(8800, () => {
-    console.log("Connected to backend!")
-})
+//Komunikacija sa portom
+const port = process.env.PORT || 8080;
+app.listen(port, () => console.log('Listening on port ${port}...'));
