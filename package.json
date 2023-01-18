@@ -1,0 +1,26 @@
+{
+  "name": "ptf-220---zalihe-materijala",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "server": "nodemon --quiet server",
+    "client": "npm start --prefix client",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kamber5/PTF-220---Zalihe-Materijala.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kamber5/PTF-220---Zalihe-Materijala/issues"
+  },
+  "homepage": "https://github.com/kamber5/PTF-220---Zalihe-Materijala#readme",
+  "devDependencies": {
+    "concurrently": "^7.6.0",
+    "nodemon": "^2.0.20"
+  }
+}

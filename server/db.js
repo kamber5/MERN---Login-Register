@@ -1,5 +1,9 @@
 const mongoose = require("mongoose");
 
+//Middleware za dotenv
+const dotenv = require('dotenv')
+dotenv.config({path:__dirname+'/.env'});
+
 //Fix za error jer mongoose mjenja cijeli sistem u Mongoose 7
 mongoose.set('strictQuery', false);
 
