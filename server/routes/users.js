@@ -1,28 +1,11 @@
-const router = require("express").Router();
-const { User, validate} = require("../models/user");
-const bcrypt = require("bcrypt");
+const { Router } = require( 'express');
+const auth = require( '../middleware/auth.js');
+const roleCheck = require( '../middleware/roleCheck.js');
 
-router.post("/", async(req, red) => {
-    try{
-        const { error } = validate(req.body);
-        if (error)
-            return resizeBy.status(400).send({message: error.details[0].message });
+const router = Router();
 
-        const user = await User.findOne({email: req.body.email});
-        if (user)
-            return resizeBy.status(409).send({message: "Korisnik sa podacima već postoji u sistemu"})
-
-        const salt = await bcrypt.genSalt(Number(process.env.SALT));
-        const hashPassword = await bcrypt.hash(req.body.password, salt);
-
-        await new User({...req.body, password:hashPassword}).save();
-        res.status(201).send({message: "Korisnik uspješno kreiran"});
-
-    } catch (error){
-        res.status(500).send({message: "Internal Server Error"})
-    };
-
-
+router.get("/details", auth, (req, res) => {
+	res.status(200).json({ message: "user authenticated." });
 });
 
 module.exports = router;

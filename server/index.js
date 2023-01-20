@@ -3,6 +3,7 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 const connection = require("./db");
+const refreshTokenRoutes = require ('./routes/refreshToken.js');
 const userRoutes = require('./routes/users');
 const authRoutes = require('./routes/auth');
 
@@ -14,8 +15,9 @@ app.use(express.json());
 app.use(cors());
 
 //Routes
+app.use("/api", authRoutes);
+app.use("/api/refreshToken", refreshTokenRoutes);
 app.use("/api/users", userRoutes);
-app.use("/api/auth", authRoutes);
 
 //Komunikacija sa portom
 const port = process.env.PORT || 8080;

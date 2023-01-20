@@ -1,41 +1,79 @@
-const router = require("express").Router();
-const { User } = require("../models/user");
-const Joi = require("joi");
-const bcrypt = require("bcrypt");
+const { Router } = require('express');
+const User = require( '../models/User.js');
+const bcrypt = require( 'bcrypt');
+const generateTokens = require( '../utils/generateTokens.js');
+const {
+	signUpBodyValidation,
+	logInBodyValidation,
+} = require( '../utils/validationSchema.js');
 
-router.post("/", async (req, res) => {
-    try{
-        const{error} = validate(req.body);
-        if (error)
-            return res.status(400).send({ message: error.details[0].message})
+const router = Router();
 
-        const user = await User.findOne({email: req.body.email});
-        if (!user)
-            return res.status(401).send({ message: "Nepostojeći Email i Password"})
+// signup
+router.post("/signUp", async (req, res) => {
+	try {
+		const { error } = signUpBodyValidation(req.body);
+		if (error)
+			return res
+				.status(400)
+				.json({ error: true, message: error.details[0].message });
 
-        const validPassword = await bcrypt.compare(
-            req.body.password, user.password
-        )
-        if(!validPassword)
-            return res.status(401).send({ message: "Nepostojeći Email i Password"})
+		const user = await User.findOne({ email: req.body.email });
+		if (user)
+			return res
+				.status(400)
+				.json({ error: true, message: "User with given email already exist" });
 
-        const token = user.generateAuthToken();
-        return res.status(200).send({data: token, message: "Uspješno ste se prijavili"})
+		const salt = await bcrypt.genSalt(Number(process.env.SALT));
+		const hashPassword = await bcrypt.hash(req.body.password, salt);
 
-    }catch (error) {
-        res.status(500).send({message: "Internal Server Error"})
+		await new User({ ...req.body, password: hashPassword }).save();
 
-    }
-
-
+		res
+			.status(201)
+			.json({ error: false, message: "Account created sucessfully" });
+	} catch (err) {
+		console.log(err);
+		res.status(500).json({ error: true, message: "Internal Server Error" });
+	}
 });
 
-const validate = (data) => {
-    const schema = Joi.object({
-        email: Joi.string().email().required().label("Email"),
-        password: Joi.string().required().label("Password"),
-    });
-    return schema.validate(data);
-};
+// login
+router.post("/logIn", async (req, res) => {
+	try {
+		const { error } = logInBodyValidation(req.body);
+		if (error)
+			return res
+				.status(400)
+				.json({ error: true, message: error.details[0].message });
+
+		const user = await User.findOne({ email: req.body.email });
+		if (!user)
+			return res
+				.status(401)
+				.json({ error: true, message: "Invalid email or password" });
+
+		const verifiedPassword = await bcrypt.compare(
+			req.body.password,
+			user.password
+		);
+		if (!verifiedPassword)
+			return res
+				.status(401)
+				.json({ error: true, message: "Invalid email or password" });
+
+		const { accessToken, refreshToken } = await generateTokens(user);
+
+		res.status(200).json({
+			error: false,
+			accessToken,
+			refreshToken,
+			message: "Logged in sucessfully",
+		});
+	} catch (err) {
+		console.log(err);
+		res.status(500).json({ error: true, message: "Internal Server Error" });
+	}
+});
 
 module.exports = router;
