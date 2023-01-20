@@ -1,10 +1,11 @@
-require('dotenv').config();
-const express = require('express');
+require("dotenv").config();
+const express = require("express");
 const app = express();
-const cors = require('cors');
+const cors = require("cors");
 const connection = require("./db");
-const userRoutes = require('./routes/users');
-const authRoutes = require('./routes/auth');
+const userRoutes = require("./routes/users");
+const listUserRoutes = require("./routes/listUsers");
+const authRoutes = require("./routes/auth");
 
 //konekcija sa bazom
 connection();
@@ -16,7 +17,9 @@ app.use(cors());
 //Routes
 app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/listUsers", listUserRoutes);
+
 
 //Komunikacija sa portom
 const port = process.env.PORT || 8080;
-app.listen(port, () => console.log('Listening on port ${port}...'));
+app.listen(port, console.log(`Listening on port ${port}...`));
